@@ -9,14 +9,18 @@ def pauli_x():
 def pauli_z():
     return np.array([[1, 0], [0, -1]])
 
-def ising_hamiltonian(N, J=1.0, h=0.0):
+def ising_hamiltonian(N, J=1.0, h=0.0, open_bc=True):
     """Construct the Ising Hamiltonian with transverse field for N spins."""
     sx = pauli_x()
     sz = pauli_z()
     I = np.eye(2)
     H = np.zeros((2**N, 2**N))
+    if open_bc:
+        last_node = N - 1
+    else:
+        last_node = N
     # Interaction term
-    for i in range(N):
+    for i in range(last_node):
         op = 1
         for j in range(N):
             if j == i:
@@ -27,7 +31,7 @@ def ising_hamiltonian(N, J=1.0, h=0.0):
                 op = kron(op, I)
         H -= J * op
     # Transverse field term
-    for i in range(N):
+    for i in range(last_node):
         op = 1
         for j in range(N):
             if j == i:

@@ -113,41 +113,9 @@ def xy_hamiltonian_fixed_sz(N, J=1.0, h=0.0, sz_value=0):
             # Only connect if flipped state is in the subspace
             if flipped in state_index:
                 jdx = state_index[flipped]
-                
-                # XX term: -J * (S_i^x S_{i+1}^x)
+
                 # This connects states where spins at i and i+1 are flipped
                 if si != sj:  # Only non-zero when spins are different
-                    H[idx, jdx] += -J
-                
-                # YY term: -J * (S_i^y S_{i+1}^y)
-                # This has the same matrix elements as XX but with phase factors
-                # For spin-1/2, the YY term is identical to XX term
-                if si != sj:
-                    H[idx, jdx] += -J
+                    H[idx, jdx] += -2 * J
     
     return H, basis
-
-# Parameters
-N = 4         # Number of spins
-J = 1.0       # Coupling constant
-h = 0.0       # Transverse field
-
-# Build full Hamiltonian
-H = xy_hamiltonian(N, J, h)
-
-# Diagonalize
-eigvals, eigvecs = np.linalg.eigh(H)
-
-print("Full Hilbert space eigenvalues (energies):")
-print(eigvals)
-
-# Example usage for fixed S_z sector
-sz_value = 0  # total S_z = 0 (2 up, 2 down for N=4)
-
-H_sz, basis_sz = xy_hamiltonian_fixed_sz(N, J, h, sz_value)
-eigvals_sz, eigvecs_sz = np.linalg.eigh(H_sz)
-print(f"\nEigenvalues (energies) in S_z = {sz_value} sector:")
-print(eigvals_sz)
-
-print(f"\nFull Hilbert space dimension: {2**N}")
-print(f"Fixed S_z sector dimension: {len(basis_sz)}")
